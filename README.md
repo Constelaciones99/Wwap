@@ -1,6 +1,7 @@
 # 📱 Sistema de Mensajería Masiva por WhatsApp
 TOKEN
 Sistema profesional de mensajería masiva por WhatsApp con funcionalidades anti-SPAM, comportamiento humano simulado y gestión multi-dispositivo.
+### No olvides poner 51 antes de cada numero de celular en el excel
 
 ## 🚀 Características Principales
 
