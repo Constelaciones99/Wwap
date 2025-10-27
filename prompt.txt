@@ -1,0 +1,115 @@
+Necesito ayuda en la creacion de un sistema de mensajería masiva por whatsapp. Usando microservicios populares como redis o plantillas de meta para evitar el bloqueo por SPAM. Puedes usar tecnologías como svelte y sveltekit, con un endpoint al back. Para backend puedes optar por @whiskeysockets/baileys para conectarme.
+
+Puntos Clave:
+*En estos puntos pon mayor énfasis debido a que mucho tienen problemas por muchas horas para solucionar. Con que funcionen estas partes todo estará bien. 
+->Generación de QR que se muestre en el frontend
+->Guardar sesión en redis
+->Comportamiento humano
+->Importar excel de mensajes con contactos+mensajes y envío masivo por whatsapp-web 
+
+Objetivo: Enviar mensajes masivos por whatsapp(manualmente: escribiendo los numeros de los contactos y el mensaje, campaña: importando excel con campos->contacto, mensaje, categoria) luego poder ejecutar funciones, como: ver chats(visualizar archivos como imagenes, mp4, audio, pdf), responder chats, persistir sesion, descargar chat manualmente(seleccionar o desde chat 1 a 1) o descargar chats por categorias, filtrar chat por categoria. Agendar envios masivos, manuales.
+
+
+Patron: Modelo-vista-controlador
+Arquitectura: Frontend, backend, plantillas
+Tecnologias: Redis(para persisitr datos y sesion), mysql(opcional para guardar informacion), python(opcional para microservicios, apis, visualizacion de archivos, gestion de carpetas de clientes al descargar chats), whatsapp-web.js, websocket.io, express, etc(generar qr en frontend,)
+
+Flujo de funciones:
+
+1.-Opcion para generar multiples sesiones, entre 1 y 5 dispositivos por sesion(1 qr por sesion). Para que luego a través de la función principal de envío de mensajes masivos se rote el dispositvo de envío. A cada dispositivo le pertenece una campaña y categoria--> cantidad de contactos.
+
+2.- Envío de mensajes:
+   >manual: campo para escribir los numeros de celular(numeros separados por coma->,) y campo para enviar mensaje a todos los numeros de contacto
+  >Campaña: Importar un archivo excel con campos sugeridos->categoria, nombre, telefono, mensaje. Luego, usar una funcion de simulacion humana de whatsapp para agregar contactos segun el campo telefono y nombre. De manera aleatoria. Luego antes de enviar mensaje seleccionar o crear una categoria para una campaña a enviar. Por ejemplo: Para importar un excel primero seleccionar una categoria a la que pertencera un campaña, luego agendar/agregar 3 contactos luego enviar 4 mensajes. Todo aleatorio->agendar entre 1 y 5 contactos, luego hacer una pausa entre 1 y 15 segundos para enviar los mensajes. Pausa aleatoria entre 1 y 5 segundos entre mensajes. 
+
+3.-opcion para quitar a un cliente de una categoria o pasar a a otra categoria(categoria: Ya pagó, etc.)
+
+4.- Agendar campaña, seleccionar la fecha y hora y categoria(s)
+
+5.- Ver contactos a la izquierda por campaña o buscar numero. Ver conversacion a la derecha de chat seleccionado. Responder a chat, descargar chat por conversacion(1) o descargar todos los de una categoria, o todos los chats sin excepcion.
+Crear una carpeta para cada persona con su nombre(o numero de telefono) Si su carpeta ya estaba creada actualizar su archivo de excel interno con toda la conversacion. Cada conversacion es creada por día. por ejemplo. CARLOS HERRERA/ carlos_herrera_900124654_25-10-2025.xlsx <---hoy
+carlos_herrera_900124654_24-10-2025.xlsx <--- ayer
+
+6.- VIsta para importar excel de contactos y guardarlo en la sesion abierta.
+
+Ademas debe tener funciones antibloqueo por SPAM, metodos como comportamiento humano, tal vez actualizar el servidor cada 50 mensajes. pausas entre un mensaje y otro aleatoriamente entre 1 y 5 segundos. Sabiendo que solo se puede enviar entre 1 a 5 mensajes como maximo asi que la cantidad es aleatoria tambien.
+El primer lote corresponde entre 10, 20, 30, 40 y 50 usando funciones gaussianas para hacerlo variable e impredecible
+Las pausas entre lotes son entre 10 y 40 segundos
+
+Por ejemplo:
+Mensajes totales:400
+
+->Lote 1(cantidad random:(entre 1 y 10)-->8)
+
+primer envio entre 1 a 5 mensajes(random: 4 envios)
+-4 reenvios exitosos(4 mensajes:excel 1, de 4 contactos:excel 2. Ambos relacionados por id) quedan 396 por enviar
+
+(pausa  entre 1 y 10 segundos)
+
+segundo envio entre 1 a 5 mensajes(random:1)
+-1 envio exitosos(1 mensajes:excel 1, de 1 contactos:excel 2. Ambos relacionados por id) quedan 395 por enviar
+
+(pausa  entre 1 y 10 segundos)
+-3 envios exitosos(porque el lote es de 8 y solo faltan 3 mensajes:excel 1, de 3 contactos:excel 2. Ambos relacionados por id) quedan 392 por reenviar
+
+FIN de lote 1
+(pausa  entre 10 y 40 segundos)
+
+
+en esta parte se decide cuantas veces mas van a ser lotes random entre 1 y 10 reenvios.
+
+Luego se decide cuantas veces sera lotes entre 10 y 20
+
+en esta parte se decide cuantas veces mas van a ser lotes random entre 10 y 20 envios.
+
+Luego se decide cuantas veces sera lotes entre 20 y 30
+
+en esta parte se decide cuantas veces mas van a ser lotes random entre 20 y 30 envios.
+
+Luego se decide cuantas veces sera lotes entre 30 y 40
+
+en esta parte se decide cuantas veces mas van a ser lotes random entre 30 y 40 envios.
+
+Luego se decide cuantas veces sera lotes entre 40 y 50
+
+en esta parte se decide cuantas veces mas van a ser lotes random entre 40 y 50 envios.
+
+
+Recuerda las pausas variables entre lotes hasta cumplir la cantidad total de mensajes. 
+
+Tambien implementa comportamiento humano (como subir estados y borrarlo, cambiar configuracion de usuario, agendar, cambiar descripcion, etc.) entre lotes o reenvios variablemente. 
+Cambiar Ip, actualizar el servidor, cambiar ajustes, descripcion, etc. pero dejarlo como estaba al principio cuando se complete el reenvio total de mensajes. 
+Ademas si se necesita de servicios o microservicios complementarios, mencionalo e implementalo, ya sea con python, redis, etc.
+
+- Ingresar con usuario y contraseña al sistema(No está permitido el registro, el registro lo hace solo lo hace el admin en la base de datos)--->Seleccionar entre 1 y 5 usuarios, luego generar QR para cada categoria de contactos y elegir a la categoria a la que pertenece.
+
+Dispositivo1: categoria 3
+Dispostivo 2: Categoria 2
+Dispostivo 3: Categoria 1, etc.
+
+- Crear campaña(envío masivo) o seleccionar (agendar)campaña.
+Envío masivo. Rotar dispositvo aleatoriamente entre el primer y el ultimo dispositivo. 
+
+por ejemplo: Campaña de 400 mensajes de los cuales 150 pertenecen a BCP, 100 a INTERBANK, 50 a BBVA, 70 a PICHINCHA y 30 FALABELLA
+
+Rotacion: 
+- Aleatoriamente se rota entre  dispositivos , por ejemplo:
+Dispositivo 3(categoria BCP: Le pertenece 150 mensajes) envío aleatorio entre 1 a 5 mensajes(4 mensajes). 
+->Pausa entre 500ms y 1000ms antes de enviar un mensaje.
+->Despues de enviar los 4 mensajes tomar una pausa entre 5 y 10 segundos. Para el dispositivo 3 le quedan 146 mensajes.
+
+Nuevamente-> Rotacion aleatoria, por ejemplo:
+Dispositivo 1(categoria BBVA, 70 mensajes) envío aleatorio entre 1 y 5 mensajes(2 mensajes)
+>Pausa entre 500ms y 1000ms antes de enviar un mensaje.
+->Despues de enviar los 2 mensajes tomar una pausa entre 5 y 10 segundos. Para el dispositivo 1 le quedan 68 mensajes.
+
+Hasta el momento se enviaron 6 mensajes(4 de dispositivo 3 y 2 de dispositivo 1) 
+Cuando pase los 50 mensajes se considera un LOTE. y por LOTE se debe hacer una pausa entre 10 y 50 segundos.
+
+Sugerencias:
+- Usar funciones para imitar comportamiento humano, desplazamiento en el chat o contactos mientras se envía un mensaje,  cambiar IP cada cierto tiempo, actualizar el servidor, cambiar descripcion de mi usuario/dispositivo, subir estados, hablar con la IA de meta, cambiar el nombre de contactos(aumentarle un numero al final o borrar la letra final), reaccionar a mi mensaje(me divierte, pulgar arriba, etc)
+
+Crear README.MD explicando el flujo, credenciales, como levantar el servidor, como crear un usuario/crendenciales.
+
+NOTA: El QR solo se debe ver en pantalla.
+
