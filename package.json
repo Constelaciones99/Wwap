@@ -1,0 +1,42 @@
+{
+  "name": "sordido-whatsapp-masivo",
+  "version": "1.0.0",
+  "description": "Sistema de mensajería masiva por WhatsApp con anti-SPAM y comportamiento humano",
+  "main": "src/backend/server.js",
+  "scripts": {
+    "start": "node src/backend/server.js",
+    "dev": "nodemon src/backend/server.js",
+    "install-python": "cd src/microservices && pip install -r requirements.txt"
+  },
+  "keywords": [
+    "whatsapp",
+    "mensajeria",
+    "masivo",
+    "anti-spam"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc.6",
+    "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.2.0",
+    "node-cron": "^3.0.2",
+    "qrcode": "^1.5.3",
+    "qrcode-terminal": "^0.12.0",
+    "redis": "^4.6.5",
+    "socket.io": "^4.6.1",
+    "uuid": "^9.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
